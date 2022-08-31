@@ -7,6 +7,8 @@ from django.views import View
 from django.http import JsonResponse
 from django.conf import settings
 
+from eboard.utils import login_decorator
+
 from .models import User
 
 class SignupView(View):
@@ -65,3 +67,11 @@ class LoginView(View):
             return JsonResponse({'Message': 'KEY_ERROR'}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"message" : "INVALID_ACCOUNT"}, status=404)
+
+
+class WithdrawView(View):
+    @login_decorator
+    def post(self, request):
+        user = request.user
+        user.delete()
+        return JsonResponse({"message": "Withdraw_SUCCESS"}, status = 200)

@@ -33,3 +33,16 @@ class NoticePostView(View):
         except KeyError:
             return JsonResponse({'Message': 'KEY_ERROR'}, status = 400)
 
+class NoticeView(View):
+    def get(self, request, notice_id):
+        try:
+            notice = Notice.objects.get(id = notice_id)
+            notice_detail = {
+                'title': notice.title,
+                'writer': notice.user.name,
+                'content': notice.content
+            }
+            return JsonResponse({'results': notice_detail}, status = 200)
+
+        except Notice.DoesNotExist:
+            return JsonResponse({'Message': 'DOES_NOT_EXIST'}, status = 400)            
